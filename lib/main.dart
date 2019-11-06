@@ -26,12 +26,20 @@ class SampleAppPage extends StatefulWidget {
 }
 
 class _SampleAppPageState extends State<SampleAppPage> {
-  String textToShow = "I Like Flutter";
+  bool toggle = true;
   
-  void _updateText() {
+  void _toggle() {
     setState(() {
-      textToShow = "Flutter is Awesome!";
+      toggle = !toggle;
     });
+  }
+  
+  _getToggleChild(){
+    if(toggle)  {
+      return Text('Toggle One');
+    } else {
+      return MaterialButton(onPressed: () {}, child: Text('Toggle Two'));
+    }
   }
   
   @override
@@ -40,9 +48,9 @@ class _SampleAppPageState extends State<SampleAppPage> {
       appBar: AppBar(
         title: Text("Sample App"),
       ),
-      body: Center(child: Text(textToShow)),
+      body: Center(child: _getToggleChild()),
       floatingActionButton: FloatingActionButton(
-        onPressed: _updateText, // イベント
+        onPressed: _toggle, // イベント
         tooltip: 'Update Text', // ボタンを長押しした時に表示される
         child: Icon(Icons.update), // アイコン
       ),
