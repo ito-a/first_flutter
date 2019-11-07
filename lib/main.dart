@@ -1,45 +1,43 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(MaterialApp(home: DemoApp()));
-
-class DemoApp extends StatelessWidget {
-  Widget build(BuildContext context) => Scaffold(body: Signature());
+void main(){
+  runApp(App());
 }
 
-class Signature extends StatefulWidget {
-  SignatureState createState() => SignatureState();
-}
-
-class SignatureState extends State<Signature> {
-  List<Offset> _points = <Offset>[];
+class App extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (DragUpdateDetails details) {
-        setState(() {
-          RenderBox referenceBox = context.findRenderObject();
-          Offset localPosition =
-          referenceBox.globalToLocal(details.globalPosition);
-          _points = List.from(_points)..add(localPosition);
-        });
-      },
-      onPanEnd: (DragEndDetails details) => _points.add(null),
-      child: CustomPaint(painter: SignaturePainter(_points), size: Size.infinite),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: Header(),
+        body: Center(child: Text("オラオラオラ"),)
+      ),
     );
   }
 }
-
-class SignaturePainter extends CustomPainter {
-  SignaturePainter(this.points);
-  final List<Offset> points;
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null)
-        canvas.drawLine(points[i], points[i + 1], paint);
-    }
+class Header extends StatelessWidget with PreferredSizeWidget{
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: Padding( // AppBarの左側に表示される
+        padding: const EdgeInsets.all(8.0),
+        child:Icon(Icons.android),
+      ),
+      actions: [ // AppBarの右側に表示される。Paddingをコピーすると複数載せれる
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(Icons.border_color),
+        ),
+      ],
+      title:Text( //leadingとactionsの間に表示される
+        'ホーム',
+      ),
+      backgroundColor: Colors.black87,
+      centerTitle: true,
+      elevation: 0.0,
+    );
   }
-  bool shouldRepaint(SignaturePainter other) => other.points != points;
 }
