@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(SampleApp());
+  runApp(FadeAppTest());
 }
 
-class SampleApp extends StatelessWidget {
-  // This widget is the root of your application.
+class FadeAppTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sample App',
+      title: 'Fade Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SampleAppPage(),
+      home: MyFadeTest(title: 'Fade Demo'),
     );
   }
 }
 
-class SampleAppPage extends StatefulWidget {
-  SampleAppPage({Key key}) : super(key: key);
-  
+class MyFadeTest extends StatefulWidget {
+  MyFadeTest({Key key, this.title}) : super(key: key);
+  final String title;
+
   @override
-  _SampleAppPageState createState() => _SampleAppPageState();
+  _MyFadeTest createState() => _MyFadeTest();
 }
 
-class _SampleAppPageState extends State<SampleAppPage> {
-  bool toggle = true;
-  
-  void _toggle() {
-    setState(() {
-      toggle = !toggle;
-    });
+class _MyFadeTest extends State<MyFadeTest> with TickerProviderStateMixin {
+  AnimationController controller;
+  CurvedAnimation curve;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 2000), vsync: this);
+    curve = CurvedAnimation(parent: controller, curve: Curves.easeIn);
   }
-  
-  _getToggleChild(){
-    if(toggle)  {
-      return Text('Toggle One');
-    } else {
-      return MaterialButton(onPressed: () {}, child: Text('Toggle Two'));
-    }
-  }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sample App"),
+        title: Text(widget.title),
       ),
-      body: Center(child: _getToggleChild()),
+      body: Center(
+          child: Container(
+            child: FadeTransition(
+              opacity: curve,
+              child: FlutterLogo(
+                size: 100.0,
+              )
+            )
+          )
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _toggle, // イベント
-        tooltip: 'Update Text', // ボタンを長押しした時に表示される
-        child: Icon(Icons.update), // アイコン
-      ),
+        tooltip: 'Fade',
+        child: Icon(Icons.brush),
+        onPressed: () {
+          controller.forward();
+        }),
     );
   }
 }
