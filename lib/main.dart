@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-void main(){
+import 'footer.dart';
+
+void main() {
   runApp(App());
 }
 
@@ -9,42 +11,34 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: Header(),
-        body: Center(child: Text("オラオラオラ")),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-          ],
-        ),
-      ),
+          appBar: Header(),
+          body: Center(child: Text("オラオラオラ")),
+          bottomNavigationBar: Footer()),
     );
   }
 }
-class Header extends StatelessWidget with PreferredSizeWidget{
+
+class Header extends StatelessWidget with PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
-  
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Padding( // AppBarの左側に表示される
+      leading: Padding(
+        // AppBarの左側に表示される
         padding: const EdgeInsets.all(8.0),
-        child:Icon(Icons.android),
+        child: Icon(Icons.android),
       ),
-      actions: [ // AppBarの右側に表示される。Paddingをコピーすると複数載せれる
+      actions: [
+        // AppBarの右側に表示される。Paddingをコピーすると複数載せれる
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(Icons.border_color),
         ),
       ],
-      title:Text( //leadingとactionsの間に表示される
+      title: Text(
+        //leadingとactionsの間に表示される
         'ホーム',
       ),
       backgroundColor: Colors.black87,
