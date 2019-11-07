@@ -1,59 +1,45 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(SampleApp());
+void main() => runApp(MaterialApp(home: DemoApp()));
+
+class DemoApp extends StatelessWidget {
+  Widget build(BuildContext context) => Scaffold(body: Signature());
 }
 
-class SampleApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+class Signature extends StatefulWidget {
+  SignatureState createState() => SignatureState();
+}
+
+class SignatureState extends State<Signature> {
+  List<Offset> _points = <Offset>[];
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sample App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SampleAppPage(),
+    return GestureDetector(
+      onPanUpdate: (DragUpdateDetails details) {
+        setState(() {
+          RenderBox referenceBox = context.findRenderObject();
+          Offset localPosition =
+          referenceBox.globalToLocal(details.globalPosition);
+          _points = List.from(_points)..add(localPosition);
+        });
+      },
+      onPanEnd: (DragEndDetails details) => _points.add(null),
+      child: CustomPaint(painter: SignaturePainter(_points), size: Size.infinite),
     );
   }
 }
 
-class SampleAppPage extends StatefulWidget {
-  SampleAppPage({Key key}) : super(key: key);
-  
-  @override
-  _SampleAppPageState createState() => _SampleAppPageState();
-}
-
-class _SampleAppPageState extends State<SampleAppPage> {
-  bool toggle = true;
-  
-  void _toggle() {
-    setState(() {
-      toggle = !toggle;
-    });
-  }
-  
-  _getToggleChild(){
-    if(toggle)  {
-      return Text('Toggle One');
-    } else {
-      return MaterialButton(onPressed: () {}, child: Text('Toggle Two'));
+class SignaturePainter extends CustomPainter {
+  SignaturePainter(this.points);
+  final List<Offset> points;
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0;
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null)
+        canvas.drawLine(points[i], points[i + 1], paint);
     }
   }
-  
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sample App"),
-      ),
-      body: Center(child: _getToggleChild()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggle, // イベント
-        tooltip: 'Update Text', // ボタンを長押しした時に表示される
-        child: Icon(Icons.update), // アイコン
-      ),
-    );
-  }
+  bool shouldRepaint(SignaturePainter other) => other.points != points;
 }
