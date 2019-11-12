@@ -1,49 +1,45 @@
 import 'package:flutter/material.dart';
-import 'footer.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
-void main() {
-  runApp(App());
+void main() => runApp(MaterialApp(home:WebViewExample()));
+
+class WebViewExample extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _WebViewExampleState();
 }
 
-class App extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          appBar: Header(),
-          body: Center(child: Text("オラオラオラ")),
-          bottomNavigationBar: Footer()),
-    );
-  }
-}
-
-class Header extends StatelessWidget with PreferredSizeWidget {
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+class _WebViewExampleState extends State<WebViewExample> {
+  WebViewController _controller;
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      leading: Padding(
-        // AppBarの左側に表示される
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(Icons.android),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Webview Demo'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              _controller.loadUrl('https://www.twitch.tv/');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add_comment),
+            onPressed: () {
+              showDialog(context: context, builder: (context) {
+                return AlertDialog(title: Text('webviewの上に表示'),);
+              });
+            },
+          ),
+        ],
       ),
-      actions: [
-        // AppBarの右側に表示される。Paddingをコピーすると複数載せれる
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.border_color),
-        ),
-      ],
-      title: Text(
-        //leadingとactionsの間に表示される
-        'ホーム',
+      body: WebView(
+        initialUrl: 'https://youtube.com',
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController controller) {
+          _controller = controller;
+        },
       ),
-      backgroundColor: Colors.black87,
-      centerTitle: true,
-      elevation: 0.0,
     );
   }
 }
